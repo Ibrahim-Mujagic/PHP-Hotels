@@ -1,41 +1,52 @@
 <?php
-    $hotels = [
-      [
-        'name' => 'Hotel Belvedere',
-        'description' => 'Hotel Belvedere Descrizione',
-        'parking' => true,
-        'vote' => 4,
-        'distance_to_center' => 10.4
-      ],
-      [
-        'name' => 'Hotel Futuro',
-        'description' => 'Hotel Futuro Descrizione',
-        'parking' => true,
-        'vote' => 2,
-        'distance_to_center' => 2
-      ],
-      [
-        'name' => 'Hotel Rivamare',
-        'description' => 'Hotel Rivamare Descrizione',
-        'parking' => false,
-        'vote' => 1,
-        'distance_to_center' => 1
-      ],
-      [
-        'name' => 'Hotel Bellavista',
-        'description' => 'Hotel Bellavista Descrizione',
-        'parking' => false,
-        'vote' => 5,
-        'distance_to_center' => 5.5
-      ],
-      [
-        'name' => 'Hotel Milano',
-        'description' => 'Hotel Milano Descrizione',
-        'parking' => true,
-        'vote' => 2,
-        'distance_to_center' => 50
-      ],
+  $hotels = [
+    [
+      'name' => 'Hotel Belvedere',
+      'description' => 'Hotel Belvedere Descrizione',
+      'parking' => true,
+      'vote' => 4,
+      'distance_to_center' => 10.4
+    ],
+    [
+      'name' => 'Hotel Futuro',
+      'description' => 'Hotel Futuro Descrizione',
+      'parking' => true,
+      'vote' => 2,
+      'distance_to_center' => 2
+    ],
+    [
+      'name' => 'Hotel Rivamare',
+      'description' => 'Hotel Rivamare Descrizione',
+      'parking' => false,
+      'vote' => 1,
+      'distance_to_center' => 1
+    ],
+    [
+      'name' => 'Hotel Bellavista',
+      'description' => 'Hotel Bellavista Descrizione',
+      'parking' => false,
+      'vote' => 5,
+      'distance_to_center' => 5.5
+    ],
+    [
+      'name' => 'Hotel Milano',
+      'description' => 'Hotel Milano Descrizione',
+      'parking' => true,
+      'vote' => 2,
+      'distance_to_center' => 50
+    ],
   ];
+
+  $filteredHotels = $hotels;
+  if (!empty($_POST['parking']) || (isset($_POST['parking']) && empty($_POST['parking']))) {
+    $filteredHotels = array_filter($filteredHotels,fn($hotel)=>$hotel['parking'] == $_POST['parking']);
+  }
+
+  if(!empty($_POST['vote'])){
+    $filteredHotels = array_filter($filteredHotels,fn($hotel)=>$hotel['vote'] >= $_POST['vote']);
+  }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,11 +60,11 @@
   <div class="container p-2">
     <main class="m-auto w-75 ">
       <div class="cont-form mb-3">
-        <form action="<?php echo $_SERVER["PHP_SELF"] ?>" method="POST">
+        <form action="<?php echo  $_SERVER["PHP_SELF"] ?>" method="POST">
           <input type="radio" name="parking" id="with-parking" value="1">
-          <label for="with-parking">Senza Parcheggio</label>
+          <label for="with-parking">Con Parcheggio</label>
           <input type="radio" name="parking" id="without-parking" value="0">
-          <label for="without-parking">Con Parcheggio</label>
+          <label for="without-parking">Senza Parcheggio</label>
           <label class="ms-3" for="voto">Voto</label>
           <input type="number" name="vote" id="voto">
           <button class="btn btn-primary ms-5" type="submit">Invia</button>
@@ -72,7 +83,7 @@
             </tr>
           </thead>
           <tbody>
-          <?php foreach($hotels as $hotel): ?>
+          <?php foreach($filteredHotels as $hotel): ?>
             <tr>
               <th><?php echo $hotel['name'] ?></th>
               <td><?php echo $hotel['description'] ?></td>
